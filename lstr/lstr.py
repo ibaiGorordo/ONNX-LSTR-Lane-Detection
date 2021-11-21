@@ -24,9 +24,6 @@ class LSTR():
 
     def initialize_model(self, model_path):
 
-        if not model_path:
-            download_gdrive_file_model()
-
         self.session = onnxruntime.InferenceSession(model_path)
 
         # Get model info

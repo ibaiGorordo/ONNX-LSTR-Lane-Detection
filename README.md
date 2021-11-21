@@ -1,5 +1,5 @@
 # ONNX LSTR Lane Detection
-Python scripts for performing lane detection using the LSTR model in ONNX.
+Python scripts for performing lane detection using the Lane Shape Prediction with Transformers (LSTR) model in ONNX.
 
 ![ONNX LSTR Lane Detection](https://github.com/ibaiGorordo/ONNX-LSTR-Lane-Detection/blob/main/doc/img/lane_Detection.jpg)
 

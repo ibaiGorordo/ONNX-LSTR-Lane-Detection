@@ -86,7 +86,6 @@ class LSTR():
         # Filter good lanes based on the probability
         prob = self.softmax(pred_logits)
         good_detections = np.where(np.argmax(prob,axis=-1)==1)
-
         pred_logits = pred_logits[good_detections]
         pred_curves = pred_curves[good_detections]
 
@@ -96,6 +95,7 @@ class LSTR():
             k_2, f_2, m_2, n_1, b_2, b_3 = lane_data[2:]
 
             # Calculate the points for the lane
+            # Note: the logspace is used for a visual effect, np.linspace would also work as in the original repository
             y_norm = bounds[0]+log_space*(bounds[1]-bounds[0])
             x_norm = (k_2 / (y_norm - f_2) ** 2 + m_2 / (y_norm - f_2) + n_1 + b_2 * y_norm - b_3)
             lane_points = np.vstack((x_norm*self.img_width, y_norm*self.img_height)).astype(int)

@@ -5,7 +5,7 @@ Python scripts for performing lane detection using the Lane Shape Prediction wit
 
 # Requirements
 
- * **OpenCV**, **scipy**, **googledrivedownloader**, **onnx** and **onnxruntime**. **pafy** and **youtube-dl** are required for youtube video inference. 
+ * Check the requirements.txt file. Additionally, **pafy** and **youtube-dl** are required for youtube video inference. 
  
 # Installation
 ```

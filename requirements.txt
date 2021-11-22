@@ -3,3 +3,4 @@ googledrivedownloader
 onnx
 onnxruntime
 imread-from-url
+requests

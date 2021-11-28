@@ -5,6 +5,8 @@ import time
 import numpy as np
 import onnx
 import onnxruntime
+import tarfile
+import shutil
 from google_drive_downloader import GoogleDriveDownloader as gdd
 
 lane_colors = [(68,65,249),(44,114,243),(30,150,248),(74,132,249),(79,199,249),(109,190,144),(142, 144, 77),(161, 125, 39)]
@@ -12,10 +14,11 @@ log_space = np.logspace(0,2, 50, base=1/10, endpoint=True)
 
 class LSTR():
 
-    def __init__(self, model_path):
+    def __init__(self, model_type, model_path):
 
-        # Initialize model
-        download_gdrive_file_model(model_path)
+        # Initialize model (download if necessary)
+        models_gdrive_id = "1uSyVLlZn0NDoa7RR3U6vG_OCkn0uoE8z"
+        download_gdrive_tar_model(models_gdrive_id, model_type, model_path)
         self.model = self.initialize_model(model_path)
 
     def __call__(self, image):
@@ -145,36 +148,47 @@ class LSTR():
 
         return visualization_img
 
-# def download_gdrive_tar_model(gdrive_id, model_path):
+def download_gdrive_tar_model(gdrive_id, model_type, model_path):
 
-#     if not os.path.exists(model_path):
-#         gdd.download_file_from_google_drive(file_id=gdrive_id,
-#                                     dest_path='./tmp/tmp.tar.gz')
-#         tar = tarfile.open("tmp/tmp.tar.gz", "r:gz")
-#         tar.extractall(path="tmp/")
-#         tar.close()
+    model_name = model_type.value
 
-#         shutil.move("tmp/saved_model_512x512/model_float32_opt.onnx", model_path)
-#         shutil.rmtree("tmp/")
-
-def download_gdrive_file_model(model_path):
-    gdrive_id = "1GMee-OeUbBGdsNz4k2GNL1qKqS25TCPN"
     if not os.path.exists(model_path):
         gdd.download_file_from_google_drive(file_id=gdrive_id,
-                                    dest_path=model_path)
+                                    dest_path='./tmp/tmp.tar.gz')
+        tar = tarfile.open("tmp/tmp.tar.gz", "r:gz")
+        tar.extractall(path="tmp/")
+        tar.close()
+
+        shutil.move(f"tmp/{model_name}/{model_name}.onnx", model_path)
+        shutil.rmtree("tmp/")
+
+# def download_gdrive_file_model(model_path, gdrive_id):
+#     if not os.path.exists(model_path):
+#         gdd.download_file_from_google_drive(file_id=gdrive_id,
+#                                     dest_path=model_path)
 
 if __name__ == '__main__':
-    # model_path='../models/lstr_360x640/model_float32.onnx'
-    model_path='../models/model_float32.onnx'
-    lane_detector = LSTR(model_path)
 
-    img = cv2.imread("../test3.jpg")
+    from enum import Enum
+    from imread_from_url import imread_from_url
+
+    class ModelType(Enum):
+        LSTR_180X320 = "lstr_180x320"
+        LSTR_240X320 = "lstr_240x320"
+        LSTR_360X640 = "lstr_360x640"
+        LSTR_480X640 = "lstr_480x640"
+        LSTR_720X1280 = "lstr_720x1280"
+
+    model_type = ModelType.LSTR_360X640
+    model_path = f"../models/{model_type.value}.onnx"
+
+    lane_detector = LSTR(model_type, model_path)
+
+    img = imread_from_url("https://live.staticflickr.com/1067/1475776461_f9adc2fee9_o_d.jpg")
     detected_lanes, lane_ids = lane_detector(img)
-    print(lane_ids)
 
     lane_img = lane_detector.draw_lanes(img)
     cv2.namedWindow("Detected lanes", cv2.WINDOW_NORMAL)
     cv2.imshow("Detected lanes",lane_img)
-    cv2.imwrite("out.jpg", lane_img)
     cv2.waitKey(0)
 

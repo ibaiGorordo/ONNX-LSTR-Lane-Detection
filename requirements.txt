@@ -2,5 +2,8 @@ opencv-python
 googledrivedownloader
 onnx
 onnxruntime
-imread-from-url
+onnxruntime-gpu
 requests
+shutil
+tarfile
+imread-from-url

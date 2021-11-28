@@ -133,15 +133,14 @@ class LSTR():
         left_lane = np.where(self.good_lanes==5)[0]
 
         if(len(left_lane) and len(right_lane)):
-            lane_segment_img = np.empty(visualization_img.shape, dtype=visualization_img.dtype)
-            visualization_img_temp = visualization_img.copy()
+            
+            lane_segment_img = visualization_img.copy()
 
             points = np.vstack((self.lanes[left_lane[0]].T,
                                 np.flipud(self.lanes[right_lane[0]].T)))
-            cv2.fillConvexPoly(lane_segment_img, points, color =(255,191,0))
-            visualization_img_temp = cv2.addWeighted(visualization_img_temp, 0.3, lane_segment_img, 0.7, 0)
-            visualization_img[lane_segment_img!=0] = visualization_img_temp[lane_segment_img!=0]
-
+            cv2.fillConvexPoly(lane_segment_img, points, color =(0,191,255))
+            visualization_img = cv2.addWeighted(visualization_img, 0.7, lane_segment_img, 0.3, 0)
+            
         for lane_num,lane_points in zip(self.good_lanes, self.lanes):
             for lane_point in lane_points.T:
                 cv2.circle(visualization_img, (lane_point[0],lane_point[1]), 3, lane_colors[lane_num], -1)

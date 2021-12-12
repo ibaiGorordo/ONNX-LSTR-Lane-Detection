@@ -4,6 +4,5 @@ onnx
 onnxruntime
 onnxruntime-gpu
 requests
-shutil
 tarfile
 imread-from-url
